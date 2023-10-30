@@ -18,45 +18,11 @@ import Data.Functor
 import Data.Text (Text)
 import Data.UUID as UUID (toText)
 import Data.UUID.V4 as Uv4 (nextRandom)
+import Database.Account (AccountT(Account))
 import Database.Beam
 import Database.Beam.Sqlite
+import Database.Page (PageT(Page))
 import Database.SQLite.Simple (Connection, execute_, Query)
-
-data AccountT f = Account
-    { _accountId            :: Columnar f Text
-    , _accountEmail         :: Columnar f Text
-    , _accountFirstName     :: Columnar f Text
-    , _accountLastName      :: Columnar f Text
-    } deriving (Generic)
-
-type Account = AccountT Identity
-type AccountId = PrimaryKey AccountT Identity
-
-deriving instance Show Account
-deriving instance Eq Account
-
-instance Beamable AccountT
-
-instance Table AccountT where
-    data PrimaryKey AccountT f = AccountId (Columnar f Text) deriving (Generic, Beamable)
-    primaryKey = AccountId . _accountId
-
-data PageT f = Page
-    { _pageId               :: Columnar f Text
-    , _pageTitle            :: Columnar f Text
-    } deriving (Generic)
-
-type Page = PageT Identity
-type PageId = PrimaryKey PageT Identity
-
-deriving instance Show Page
-deriving instance Eq Page
-
-instance Beamable PageT
-
-instance Table PageT where
-    data PrimaryKey PageT f = PageId (Columnar f Text) deriving (Generic, Beamable)
-    primaryKey = PageId . _pageId
 
 data KvasirDb f = KvasirDb
                 { _kvasirAccounts   :: f (TableEntity AccountT)
