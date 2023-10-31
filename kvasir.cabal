@@ -15,20 +15,23 @@ executable kvasir
     main-is:                Main.hs
     default-language:       Haskell2010
     hs-source-dirs:         src
-                          , src/Handlers
+                          , src/Controllers
                           , src/Html
-                          , src/Pages
+                          , src/Views
 
     other-modules:          Database
                           , Database.Account
                           , Database.Page
-                          , Handlers
-                          , Handlers.Authentication
+                          , Controllers
+                          , Controllers.Authentication
+                          , Controllers.Root
                           , Html
                           , Html.Attributes
                           , Html.Types
-                          , Pages.Authentication
-                          , Pages.Layout
+                          , Views.Authentication
+                          , Views.Components
+                          , Views.Layout
+                          , Views.Root
 
     build-depends:          base ^>=4.17.2.0
                           , warp >= 3.3.29
@@ -40,6 +43,9 @@ executable kvasir
                           , utf8-string >= 0.9
                           , sqlite-simple >= 0.4.18
                           , uuid >= 1.3.15
+                          , wai-extra >=3.0 && <3.2
+                          , wai-app-static >= 3.1 && < 3.2
+                          , http-types ^>= 0.12.3
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:

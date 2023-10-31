@@ -62,6 +62,9 @@ renderDocument n =
     TLE.encodeUtf8 $ intercalate "" ["<!DOCTYPE html>", nodeToText n]
 
 -- Shorthands
+a' :: [Attribute] -> [Node] -> Node
+a' = element "a"
+
 body :: [Attribute] -> [Node] -> Node
 body = element "body"
 
@@ -95,11 +98,17 @@ label = element "label"
 li :: [Attribute] -> [Node] -> Node
 li = element "li"
 
+link :: [Attribute] -> Node
+link attrs = element "link" attrs []
+
 main' :: [Attribute] -> [Node] -> Node
 main' = element "main"
 
 meta :: [Attribute] -> Node
 meta attrs = element "meta" attrs []
+
+nav :: [Attribute] -> [Node] -> Node
+nav = element "nav"
 
 ul :: [Attribute] -> [Node] -> Node
 ul = element "ul"

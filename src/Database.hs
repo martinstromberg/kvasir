@@ -1,14 +1,14 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE GADTs #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
+-- {-# LANGUAGE FlexibleContexts #-}
+-- {-# LANGUAGE FlexibleInstances #-}
+-- {-# LANGUAGE GADTs #-}
+-- {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TypeApplications #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE TypeSynonymInstances #-}
-{-# LANGUAGE StandaloneDeriving #-}
+-- {-# LANGUAGE TypeApplications #-}
+-- {-# LANGUAGE TypeFamilies #-}
+-- {-# LANGUAGE TypeSynonymInstances #-}
+-- {-# LANGUAGE StandaloneDeriving #-}
 
 module Database
     ( seedKvasirDatabase
@@ -33,7 +33,13 @@ kvasirDb :: DatabaseSettings be KvasirDb
 kvasirDb = defaultDbSettings
 
 createAccountTCmd :: Query
-createAccountTCmd = "CREATE TABLE IF NOT EXISTS accounts (id NVARCHAR(36) NOT NULL PRIMARY KEY, email NVARCHAR(254) NOT NULL, first_name NVARCHAR(64) NOT NULL, last_name NVARCHAR(64) NOT NULL);"
+createAccountTCmd =
+    "CREATE TABLE IF NOT EXISTS accounts ( \
+        \id NVARCHAR(36) NOT NULL PRIMARY KEY, \
+        \email NVARCHAR(254) NOT NULL, \
+        \first_name NVARCHAR(64) NOT NULL, \
+        \last_name NVARCHAR(64) NOT NULL\
+    \);"
 
 ensureCreated :: Connection -> IO ()
 ensureCreated conn = do
