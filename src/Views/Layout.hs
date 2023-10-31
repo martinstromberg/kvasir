@@ -42,7 +42,12 @@ anonymousHeader :: Text -> Node
 anonymousHeader activePath = 
     header [ id' "guest-header" ]
     [ div' []
-        [ a' [ href "/" ]
+        [ a' 
+            [ href "/"
+            , hxGet "/"
+            , hxSwap "innerHTML"
+            , hxTarget "#app-root"
+            ]
             [ text "Kvasir" ]
         ]
     , nav [ id' "guest-menu"]
@@ -61,7 +66,7 @@ anonymousLayout :: Text -> Text -> [Node] -> Node
 anonymousLayout path pageTitle elems =
     commonLayout pageTitle
     [ anonymousHeader path
-    , main' [ class' "app-root" ] elems
+    , main' [ id' "app-root" ] elems
     , footer [] [text "this is my footer"]
     , htmxNode
     ]

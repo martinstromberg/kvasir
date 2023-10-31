@@ -33,6 +33,15 @@ crossOrigin = attribute "crossorigin"
 href :: Text -> Attribute
 href = attribute "href"
 
+hxGet :: Text -> Attribute
+hxGet = attribute "hx-get"
+
+hxSwap :: Text -> Attribute
+hxSwap = attribute "hx-swap"
+
+hxTarget :: Text -> Attribute
+hxTarget = attribute "hx-target"
+
 id' :: Text -> Attribute
 id' = attribute "id"
 
