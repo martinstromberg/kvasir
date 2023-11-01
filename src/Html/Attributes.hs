@@ -33,6 +33,10 @@ crossOrigin = attribute "crossorigin"
 href :: Text -> Attribute
 href = attribute "href"
 
+hxBoost :: Bool -> Attribute
+hxBoost True = attribute "hx-boost" "true"
+hxBoost False = attribute "hx-boost" "false"
+
 hxGet :: Text -> Attribute
 hxGet = attribute "hx-get"
 

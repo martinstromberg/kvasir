@@ -40,11 +40,10 @@ activeClass href path classes
 
 anonymousHeader :: Text -> Node
 anonymousHeader activePath = 
-    header [ id' "guest-header" ]
+    header [ id' "guest-header" , hxBoost True ]
     [ div' []
         [ a' 
             [ href "/"
-            , hxGet "/"
             , hxSwap "innerHTML"
             , hxTarget "#app-root"
             ]
@@ -55,7 +54,11 @@ anonymousHeader activePath =
             [ li
                 [ class' $ activeClass "/sign-in" activePath "menu-item"
                 ]
-                [ a' [ href "/sign-in" ]
+                [ a'
+                    [ href "/sign-in"
+                    , hxSwap "innerHTML"
+                    , hxTarget "#app-root"
+                    ]
                     [ text "Sign In" ]
                 ]
             ]

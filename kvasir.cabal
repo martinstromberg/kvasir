@@ -28,6 +28,7 @@ executable kvasir
                           , Html
                           , Html.Attributes
                           , Html.Types
+                          , Utils
                           , Views.Authentication
                           , Views.Components
                           , Views.Layout
