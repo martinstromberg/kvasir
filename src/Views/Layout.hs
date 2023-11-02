@@ -7,6 +7,8 @@ import Html
 import Html.Attributes
 import Html.Types
 
+type Layout = Text -> Text -> [Node] -> Node
+
 htmxNode :: Node
 htmxNode = 
     script
@@ -65,7 +67,7 @@ anonymousHeader activePath =
         ]
     ]
 
-anonymousLayout :: Text -> Text -> [Node] -> Node
+anonymousLayout :: Layout
 anonymousLayout path pageTitle elems =
     commonLayout pageTitle
     [ anonymousHeader path

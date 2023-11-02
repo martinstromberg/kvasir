@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Controllers.Root where
 
 import Utils
@@ -6,7 +7,4 @@ import Web.Twain
 
 handleGetGuestIndex :: ResponderM a
 handleGetGuestIndex = do
-    currentPath <- getCurrentPath
-    isHtmx <- checkHtmxRequest
-
-    respondWithHtmlNode isHtmx $ guestLandingPage isHtmx currentPath
+    respondWithHtmlNode AnonymousLayout "Home" guestLandingPage

@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Controllers.Authentication where
 
 import Views.Authentication
@@ -6,8 +8,5 @@ import Utils
 
 handleGetSignIn :: ResponderM a
 handleGetSignIn = do
-    currentPath <- getCurrentPath
-    isHtmx <- checkHtmxRequest
-
-    respondWithHtmlNode isHtmx $ signInPage isHtmx currentPath
+    respondWithHtmlNode AnonymousLayout "Sign In" signInPage
 
