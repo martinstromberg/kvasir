@@ -12,6 +12,6 @@ routes :: Connection -> OAuth2Info -> [Middleware]
 routes conn oauth2Info =
     [ get "/" handleGetGuestIndex
     , get "/sign-in" $ handleGetSignIn oauth2Info
-    , get "/oauth2/callback" $ handleGetOAuth2Callback oauth2Info
+    , get "/oauth2/callback" $ handleGetOAuth2Callback conn oauth2Info
     ]
 

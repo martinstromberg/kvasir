@@ -58,8 +58,7 @@ anonymousHeader activePath =
                 ]
                 [ a'
                     [ href "/sign-in"
-                    , hxSwap "innerHTML"
-                    , hxTarget "#app-root"
+                    , hxBoost False
                     ]
                     [ text "Sign In" ]
                 ]
@@ -71,6 +70,15 @@ anonymousLayout :: Layout
 anonymousLayout path pageTitle elems =
     commonLayout pageTitle
     [ anonymousHeader path
+    , main' [ id' "app-root" ] elems
+    , footer [] [text "this is my footer"]
+    , htmxNode
+    ]
+
+authenticatedLayout :: Layout
+authenticatedLayout path pageTitle elems =
+    commonLayout pageTitle
+    [ header [] [text "this is the authenticated header"]
     , main' [ id' "app-root" ] elems
     , footer [] [text "this is my footer"]
     , htmxNode

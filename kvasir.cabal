@@ -22,6 +22,7 @@ executable kvasir
     other-modules:          Database
                           , Database.Account
                           , Database.Page
+                          , Database.Types
                           , Controllers
                           , Controllers.Authentication
                           , Controllers.Root
@@ -35,24 +36,26 @@ executable kvasir
                           , Views.Layout
                           , Views.Root
 
-    build-depends:          base ^>=4.17.2.0
-                          , warp >= 3.3.29
-                          , twain ^>= 2.1
-                          , beam-core >= 0.10
-                          , beam-sqlite >= 0.5.3
-                          , text >=1.0  && <2.1
-                          , bytestring >= 0.10.4
-                          , utf8-string >= 0.9
-                          , sqlite-simple >= 0.4.18
-                          , uuid >= 1.3.15
-                          , wai-extra >=3.0 && <3.2
-                          , wai-app-static >= 3.1 && < 3.2
-                          , http-types ^>= 0.12.3
-                          , aeson >= 0.7.0.3 && < 3
-                          , wreq >= 0.5.4 && < 0.6
-                          , lens >= 4.5
-                          , uri-encode >= 1.5
-                          , dotenv >= 0.11
+    build-depends:          base            ^>= 4.17.2.0
+                          , warp             >= 3.3.29
+                          , twain           ^>= 2.1
+                          , beam-core        >= 0.10
+                          , beam-sqlite      >= 0.5.3
+                          , text             >= 1.0     && <2.1
+                          , time             >= 1.9
+                          , bytestring       >= 0.10.4
+                          , utf8-string      >= 0.9
+                          , sqlite-simple    >= 0.4.18
+                          , uuid             >= 1.3.15
+                          , wai-extra        >= 3.0     && <3.2
+                          , wai-app-static   >= 3.1     && < 3.2
+                          , http-types      ^>= 0.12.3
+                          , aeson            >= 0.7.0.3 && < 3
+                          , wreq             >= 0.5.4   && < 0.6
+                          , lens             >= 4.5
+                          , uri-encode       >= 1.5
+                          , dotenv           >= 0.11
+                          , jwt              >= 0.11    && < 0.12
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:

@@ -1,30 +1,42 @@
-{-# LANGUAGE DeriveAnyClass #-}
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE StandaloneDeriving #-}
-{-# LANGUAGE TypeFamilies #-}
-
 module Database.Account where
 
-import Data.Text (Text)
+import Data.Functor
+import Data.Maybe
+import Data.Text as TS (Text)
+import Data.UUID as UUID (toText)
+import Data.UUID.V4 as Uv4 (nextRandom)
+import Database (KvasirDb(_kvasirAccounts), kvasirDb)
 import Database.Beam
+import Database.Beam.Sqlite
+import Database.SQLite.Simple (Connection)
+import Database.Types (AccountT(Account, _accountEmail))
 
-data AccountT f = Account
-    { _accountId            :: Columnar f Text
-    , _accountEmail         :: Columnar f Text
-    , _accountFirstName     :: Columnar f Text
-    , _accountLastName      :: Columnar f Text
-    } deriving (Generic)
+getAccountByEmailAddress :: Connection -> TS.Text -> IO (Maybe (AccountT Identity))
+getAccountByEmailAddress conn email = do
+    runBeamSqlite conn
+        $ runSelectReturningOne
+        $ select
+        $ filter_ (\s -> _accountEmail s ==. val_ email)
+        $ all_ (_kvasirAccounts kvasirDb)
 
-type Account = AccountT Identity
-type AccountId = PrimaryKey AccountT Identity
+createAccount :: Connection -> Text -> Text -> Text -> IO (AccountT Identity)
+createAccount conn email fn ln = do
+    accountId <- Uv4.nextRandom <&> UUID.toText
 
-deriving instance Show Account
-deriving instance Eq Account
+    let account = Account accountId email fn ln
 
-instance Beamable AccountT
+    runBeamSqlite conn
+        $ runInsert
+        $ insert (_kvasirAccounts kvasirDb)
+        $ insertValues [account]
 
-instance Table AccountT where
-    data PrimaryKey AccountT f = AccountId (Columnar f Text) deriving (Generic, Beamable)
-    primaryKey = AccountId . _accountId
+    return account
+
+getOrCreateAccount :: Connection -> Text -> Text -> Text -> IO (AccountT Identity)
+getOrCreateAccount conn email fn ln = do
+    m <- getAccountByEmailAddress conn email
+
+    case m of
+        Just acc -> return acc
+        Nothing -> createAccount conn email fn ln
 

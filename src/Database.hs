@@ -10,18 +10,15 @@
 -- {-# LANGUAGE TypeSynonymInstances #-}
 -- {-# LANGUAGE StandaloneDeriving #-}
 
-module Database
-    ( seedKvasirDatabase
-    ) where
+module Database where
 
 import Data.Functor
 import Data.Text (Text)
 import Data.UUID as UUID (toText)
 import Data.UUID.V4 as Uv4 (nextRandom)
-import Database.Account (AccountT(Account))
+import Database.Types (AccountT(Account), PageT(Page))
 import Database.Beam
 import Database.Beam.Sqlite
-import Database.Page (PageT(Page))
 import Database.SQLite.Simple (Connection, execute_, Query)
 
 data KvasirDb f = KvasirDb

@@ -7,4 +7,7 @@ import Web.Twain
 
 handleGetGuestIndex :: ResponderM a
 handleGetGuestIndex = do
-    respondWithHtmlNode AnonymousLayout "Home" guestLandingPage
+    isAuth <- isAuthenticated
+    let layout = if isAuth then AuthenticatedLayout else AnonymousLayout
+
+    respondWithHtmlNode layout "Home" guestLandingPage
