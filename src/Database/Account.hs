@@ -9,7 +9,15 @@ import Database (KvasirDb(_kvasirAccounts), kvasirDb)
 import Database.Beam
 import Database.Beam.Sqlite
 import Database.SQLite.Simple (Connection)
-import Database.Types (AccountT(Account, _accountEmail))
+import Database.Types (AccountT(..))
+
+getAccountById :: Connection -> TS.Text -> IO (Maybe (AccountT Identity))
+getAccountById conn id = do
+    runBeamSqlite conn
+        $ runSelectReturningOne
+        $ select
+        $ filter_ (\s -> _accountId s ==. val_ id)
+        $ all_ (_kvasirAccounts kvasirDb)
 
 getAccountByEmailAddress :: Connection -> TS.Text -> IO (Maybe (AccountT Identity))
 getAccountByEmailAddress conn email = do

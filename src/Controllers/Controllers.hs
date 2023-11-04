@@ -10,7 +10,7 @@ import Types (OAuth2Info)
 
 routes :: Connection -> OAuth2Info -> [Middleware]
 routes conn oauth2Info =
-    [ get "/" handleGetGuestIndex
+    [ get "/" $ handleGetLandingPage conn
     , get "/sign-in" $ handleGetSignIn oauth2Info
     , get "/oauth2/callback" $ handleGetOAuth2Callback conn oauth2Info
     ]

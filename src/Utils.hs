@@ -21,21 +21,37 @@ getLayout :: LayoutType -> Layout
 getLayout AnonymousLayout = anonymousLayout
 getLayout AuthenticatedLayout = authenticatedLayout
 
-isAuthenticated :: ResponderM Bool
-isAuthenticated = do
+getAuthCoookieJwt :: ResponderM (Maybe (JWT VerifiedJWT))
+getAuthCoookieJwt = do
     mc <- cookieParamMaybe "KvasirAuth" >>= parseCookie
-    liftIO $ isJwtValid mc
+    liftIO $ verifyJwt mc
     where
-        isJwtValid :: Maybe TS.Text -> IO Bool
-        isJwtValid (Just input) = do
+        verifyJwt :: Maybe TS.Text -> IO (Maybe (JWT VerifiedJWT))
+        verifyJwt (Just input) = do
             rsaKey <- liftIO $ fromJust . readRsaSecret <$> BS.readFile "jwt.pem"
             let verifier = toVerify $ EncodeRSAPrivateKey rsaKey
-            let mJwt = JWT.decodeAndVerifySignature verifier input
-            return $ isJust mJwt
-        isJwtValid _ = return False
+            return $ JWT.decodeAndVerifySignature verifier input
+        verifyJwt _ = return Nothing
 
         parseCookie :: Maybe TS.Text -> ResponderM (Maybe TS.Text)
         parseCookie maybeCookie = do return maybeCookie
+
+
+isAuthenticated :: ResponderM Bool
+isAuthenticated = do isJust <$> getAuthCoookieJwt
+
+authenticatedId :: ResponderM (Maybe TS.Text)
+authenticatedId = do getAccountId <$> getAuthCoookieJwt
+    where
+        getSubject :: JWT VerifiedJWT -> Maybe TS.Text
+        getSubject jwt =
+            case sub $ claims jwt of
+                Just a -> Just $ TS.pack $ show a
+                Nothing -> Nothing
+
+        getAccountId :: Maybe (JWT VerifiedJWT) -> Maybe TS.Text
+        getAccountId (Just jwt) = getSubject jwt
+        getAccountId _ = Nothing
 
 respondWithHtmlNode :: LayoutType -> TL.Text -> Node -> ResponderM a
 respondWithHtmlNode layoutType title node = do
