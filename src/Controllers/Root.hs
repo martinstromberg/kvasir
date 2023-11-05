@@ -21,7 +21,7 @@ _getLandingPage conn True = do
 
     case mAcc of
         Just acc -> do
-            respondWithHtmlNode AuthenticatedLayout "Home"
+            respondWithHtmlNode (Just acc) "Home"
             $ authenticatedLandingPage $ _accountFirstName acc
         Nothing -> do _getLandingPage conn False
     where
@@ -31,4 +31,4 @@ _getLandingPage conn True = do
         getAccount _ = do return Nothing
 
 _getLandingPage _ False = do
-    respondWithHtmlNode AnonymousLayout "Home" guestLandingPage
+    respondWithHtmlNode Nothing "Home" guestLandingPage

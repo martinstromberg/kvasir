@@ -2,7 +2,9 @@
 
 module Views.Layout where
 
-import Data.Text.Lazy as TL (Text, isPrefixOf, unwords)
+import Data.Text.Lazy as TL (Text, isPrefixOf, fromStrict, unwords)
+import Database.Beam (Identity)
+import Database.Types
 import Html
 import Html.Attributes
 import Html.Types
@@ -16,6 +18,11 @@ htmxNode =
         , integrity "sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
         , src "https://unpkg.com/htmx.org@1.9.6"
         ] ""
+
+activeClass :: Text -> Text -> Text -> Text
+activeClass href path classes
+    | href `isPrefixOf` path = TL.unwords [classes, "active"]
+    | otherwise = classes
 
 commonLayout :: Text -> [Node] -> Node
 commonLayout pageTitle bodyContent = 
@@ -33,11 +40,6 @@ commonLayout pageTitle bodyContent =
             ]
         , body [] bodyContent
         ]
-
-activeClass :: Text -> Text -> Text -> Text
-activeClass href path classes
-    | href `isPrefixOf` path = TL.unwords [classes, "active"]
-    | otherwise = classes
     
 
 anonymousHeader :: Text -> Node
@@ -66,7 +68,7 @@ anonymousHeader activePath =
         ]
     ]
 
-anonymousLayout :: Layout
+anonymousLayout :: Text -> Text -> [Node] -> Node
 anonymousLayout path pageTitle elems =
     commonLayout pageTitle
     [ anonymousHeader path
@@ -75,10 +77,31 @@ anonymousLayout path pageTitle elems =
     , htmxNode
     ]
 
-authenticatedLayout :: Layout
-authenticatedLayout path pageTitle elems =
+authenticatedHeader :: AccountT Identity -> Node
+authenticatedHeader acc =
+    let name = TL.fromStrict $ _accountFirstName acc
+    in header [ id' "app-header" ]
+    [ div' []
+        [ a' 
+            [ href "/"
+            , hxSwap "innerHTML"
+            , hxTarget "#app-root"
+            ]
+            [ text "Kvasir" ]
+        ]
+    , nav [ id' "app-menu" ]
+        [ ul [ class' "menu-items" ]
+            [ li [ class' "menu-item" ]
+                [ a' [ href "/bookmarks" , hxBoost True ] [ text "Bookmarks" ] ]
+            ]
+        ]
+    , div' [] [ text ("Hello " <> name) ]
+    ]
+
+authenticatedLayout :: AccountT Identity -> Text -> Text -> [Node] -> Node
+authenticatedLayout acc path pageTitle elems =
     commonLayout pageTitle
-    [ header [] [text "this is the authenticated header"]
+    [ authenticatedHeader acc
     , main' [ id' "app-root" ] elems
     , footer [] [text "this is my footer"]
     , htmxNode
