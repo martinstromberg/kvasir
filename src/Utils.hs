@@ -61,7 +61,7 @@ respondWithHtmlNode mAcc title node = do
         response :: Bool -> Maybe (AccountT Identity) -> TL.Text -> TL.Text -> Node -> BL.ByteString
         response True _ _ _ node' = HTML.renderNode node'
         response False mAcc' title' path' node' =
-            HTML.renderNode
+            HTML.renderDocument
             $ withLayout mAcc' title' path' node'
 
         withLayout :: Maybe (AccountT Identity) -> TL.Text -> TL.Text -> Node -> Node
@@ -73,12 +73,6 @@ respondWithHtmlNode mAcc title node = do
 
 getCurrentPath :: ResponderM TL.Text
 getCurrentPath = do TLE.decodeUtf8 . BL.fromStrict . rawPathInfo <$> request
-
-respondWithHtmlNode' :: Bool -> Node -> ResponderM a
-respondWithHtmlNode' isHtmx node = do
-    let render = if isHtmx then HTML.renderNode else HTML.renderDocument
-    send $ html $ render node
-
 
 checkHtmxRequest :: ResponderM Bool
 checkHtmxRequest =

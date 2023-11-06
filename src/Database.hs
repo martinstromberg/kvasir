@@ -5,7 +5,7 @@
 -- {-# LANGUAGE GADTs #-}
 -- {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
--- {-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE TypeApplications #-}
 -- {-# LANGUAGE TypeFamilies #-}
 -- {-# LANGUAGE TypeSynonymInstances #-}
 -- {-# LANGUAGE StandaloneDeriving #-}
@@ -13,11 +13,13 @@
 module Database where
 
 import Data.Functor
+import Data.Int
 import Data.Text (Text)
 import Data.UUID as UUID (toText)
 import Data.UUID.V4 as Uv4 (nextRandom)
 import Database.Types (AccountT(Account), PageT(Page))
 import Database.Beam
+import Database.Beam.Query
 import Database.Beam.Sqlite
 import Database.SQLite.Simple (Connection, execute_, Query)
 
@@ -42,14 +44,29 @@ ensureCreated :: Connection -> IO ()
 ensureCreated conn = do
     execute_ conn createAccountTCmd
 
+createAccountIfNotExist :: Connection -> IO ()
+createAccountIfNotExist conn = do
+    accountCount <- runBeamSqliteDebug putStrLn conn
+            $ runSelectReturningOne
+            $ select
+            $ aggregate_ (\a -> as_ @Int32 countAll_)
+            $ all_ (_kvasirAccounts kvasirDb)
+
+    case accountCount of
+        Just 0 -> do
+            accountId <- Uv4.nextRandom <&> UUID.toText
+            _ <- runBeamSqliteDebug putStrLn conn
+                $ runInsert
+                $ insert (_kvasirAccounts kvasirDb)
+                $ insertValues [ Account accountId "john.doe@citadel.local" "John" "Doe"
+                               ]
+            return ()
+        _ -> return ()
+    
+
 seedKvasirDatabase :: Connection -> IO ()
 seedKvasirDatabase conn = do
     ensureCreated conn
-
-    accountId <- Uv4.nextRandom <&> UUID.toText
-    runBeamSqliteDebug putStrLn conn
-        $ runInsert
-        $ insert (_kvasirAccounts kvasirDb)
-        $ insertValues [ Account accountId "john.doe@citadel.local" "John" "Doe"
-                       ]
+    createAccountIfNotExist conn
+    
 

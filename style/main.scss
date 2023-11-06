@@ -1,0 +1,31 @@
+@import "./colors.scss";
+@import "./variables.scss";
+@import "./mixins.scss";
+
+
+html,body,p,ol,ul,li{
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: $themeBackground;
+    color: $themeForeground;
+    padding-top: $topMenuHeight + $mediumSpacing;
+}
+
+a {
+    color: $themeBrightCyan;
+
+    &:visited {
+        color: $themeCyan;
+    }
+
+    &:hover {
+        color: $themeRed;
+    }
+}
+
+header#guest-header, header#app-header {
+    @include fixedTopHeader($topMenuHeight);
+}

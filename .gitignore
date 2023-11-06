@@ -25,4 +25,7 @@ cabal.project.local~
 .env
 *.pem
 
+*.css
+*.css.map
+
 kvasir.db
