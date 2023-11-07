@@ -64,6 +64,9 @@ name = attribute "name"
 rel :: Text -> Attribute
 rel = attribute "rel"
 
+role' :: Text -> Attribute
+role' = attribute "role"
+
 src :: Text -> Attribute
 src = attribute "src"
 

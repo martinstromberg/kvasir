@@ -10,13 +10,22 @@
     right: 0;
     top: 0;
 
+    div.logo {
+        padding: $mediumSpacing;
+    }
+
     nav {
         flex-grow: 1;
 
         ul {
-            li {
+            li.menu-item {
                 list-style: none;
+                padding: $mediumSpacing;
             }
         }
+    }
+
+    div.user-menu {
+        padding: $mediumSpacing;
     }
 }

@@ -45,7 +45,7 @@ commonLayout pageTitle bodyContent =
 anonymousHeader :: Text -> Node
 anonymousHeader activePath = 
     header [ id' "guest-header" , hxBoost True ]
-    [ div' []
+    [ div' [ class' "logo" ]
         [ a' 
             [ href "/"
             , hxSwap "innerHTML"
@@ -81,7 +81,7 @@ authenticatedHeader :: AccountT Identity -> Node
 authenticatedHeader acc =
     let name = TL.fromStrict $ _accountFirstName acc
     in header [ id' "app-header" ]
-    [ div' []
+    [ div' [ class' "logo" ]
         [ a' 
             [ href "/"
             , hxSwap "innerHTML"
@@ -95,7 +95,8 @@ authenticatedHeader acc =
                 [ a' [ href "/bookmarks" , hxBoost True ] [ text "Bookmarks" ] ]
             ]
         ]
-    , div' [] [ text ("Hello " <> name) ]
+    , div' [ class' "user-menu", role' "presentation"]
+        [ text ("Hello " <> name) ]
     ]
 
 authenticatedLayout :: AccountT Identity -> Text -> Text -> [Node] -> Node
