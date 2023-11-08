@@ -14,35 +14,33 @@ data AccountT f = Account
     , _accountEmail         :: Columnar f Text
     , _accountFirstName     :: Columnar f Text
     , _accountLastName      :: Columnar f Text
-    } deriving (Generic)
-
+    } deriving (Generic, Beamable)
 type Account = AccountT Identity
-type AccountId = PrimaryKey AccountT Identity
 
 deriving instance Show Account
+deriving instance Show (PrimaryKey AccountT Identity)
 deriving instance Eq Account
-
-instance Beamable AccountT
 
 instance Table AccountT where
     data PrimaryKey AccountT f = AccountId (Columnar f Text) deriving (Generic, Beamable)
     primaryKey = AccountId . _accountId
+type AccountId = PrimaryKey AccountT Identity
 
 
 data PageT f = Page
-    { _pageId               :: Columnar f Text
-    , _pageTitle            :: Columnar f Text
-    } deriving (Generic)
-
+    { _pageId                   :: Columnar f Text
+    , _pageTitle                :: Columnar f Text
+    , _pageBody                 :: Columnar f Text
+    , _pageParentId             :: Columnar f (Maybe Text)
+    , _pageCreatorId            :: PrimaryKey AccountT f
+    } deriving (Generic, Beamable)
 type Page = PageT Identity
-type PageId = PrimaryKey PageT Identity
 
 deriving instance Show Page
-deriving instance Eq Page
-
-instance Beamable PageT
+deriving instance Show (PrimaryKey PageT Identity)
 
 instance Table PageT where
     data PrimaryKey PageT f = PageId (Columnar f Text) deriving (Generic, Beamable)
     primaryKey = PageId . _pageId
+type PageId = PrimaryKey PageT Identity
 

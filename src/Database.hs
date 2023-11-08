@@ -40,9 +40,20 @@ createAccountTCmd =
         \last_name NVARCHAR(64) NOT NULL\
     \);"
 
+createPageTCmd :: Query
+createPageTCmd =
+    "CREATE TABLE IF NOT EXISTS pages ( \
+        \id NVARCHAR(36) NOT NULL PRIMARY KEY, \
+        \title NVARHCAR(128) NOT NULL, \
+        \body TEXT NOT NULL, \
+        \parent_id NVARCHAR(36) NULL, \
+        \creator_id NVARCHAR(36) NOT NULL \
+    \);"
+
 ensureCreated :: Connection -> IO ()
 ensureCreated conn = do
     execute_ conn createAccountTCmd
+    execute_ conn createPageTCmd
 
 createAccountIfNotExist :: Connection -> IO ()
 createAccountIfNotExist conn = do
@@ -67,6 +78,8 @@ createAccountIfNotExist conn = do
 seedKvasirDatabase :: Connection -> IO ()
 seedKvasirDatabase conn = do
     ensureCreated conn
-    createAccountIfNotExist conn
+    -- Since we log in with OAuth2, we don't actually need to precreate an 
+    -- account. I'll leave the line and the related statement for a bit though
+    -- createAccountIfNotExist conn
     
 
