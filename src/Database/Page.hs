@@ -14,7 +14,7 @@ import Database.Types
 getTopPagesByCreator :: TS.Text -> Connection -> IO [PageT Identity]
 getTopPagesByCreator accountId conn =
     -- I wish I could find a way to do this without joining but beam man, idk...
-    runBeamSqliteDebug putStrLn conn $ runSelectReturningList $ select $ do
+    runBeamSqlite conn $ runSelectReturningList $ select $ do
         accounts <- all_ (_kvasirAccounts kvasirDb)
         pages <- oneToMany_ (_kvasirPages kvasirDb) _pageCreatorId accounts
         guard_ (_accountId accounts ==. val_ accountId)

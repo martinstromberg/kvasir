@@ -8,6 +8,7 @@ import Database.Types
 import Html
 import Html.Attributes
 import Html.Types
+import Views.Components (sidebarPageListItem)
 
 type Layout = Text -> Text -> [Node] -> Node
 
@@ -99,11 +100,19 @@ authenticatedHeader acc =
         [ text ("Hello " <> name) ]
     ]
 
-authenticatedLayout :: AccountT Identity -> Text -> Text -> [Node] -> Node
-authenticatedLayout acc path pageTitle elems =
+authenticatedSidebar :: [PageT Identity] -> Node
+authenticatedSidebar pages =
+    section [ id' "app-sidebar" ]
+        [ nav []
+            [ ul [] (map sidebarPageListItem pages)
+            ]
+        ]
+
+authenticatedLayout :: AccountT Identity -> [PageT Identity] -> Text -> Text -> [Node] -> Node
+authenticatedLayout acc pages path pageTitle elems =
     commonLayout pageTitle
     [ authenticatedHeader acc
-    , main' [ id' "app-root" ] elems
+    , main' [ id' "app-root" ] ([authenticatedSidebar pages] <> elems)
     , footer [] [text "this is my footer"]
     , htmxNode
     ]

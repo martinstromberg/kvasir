@@ -10,12 +10,14 @@ import qualified Data.Text.Lazy as TL
 import qualified Data.Text.Lazy.Encoding as TLE
 import qualified Data.Text as TS
 import Database.Beam (Identity)
+import Database.SQLite.Simple (Connection)
 import Database.Types
 import qualified Html as HTML
 import Html.Types (Node)
 import Views.Layout
 import Web.JWT as JWT
 import Web.Twain as Twain
+import Database.Page (getTopPagesByCreator)
 
 data LayoutType = AnonymousLayout | AuthenticatedLayout
 
@@ -51,24 +53,33 @@ authenticatedId = do getAccountId <$> getAuthCoookieJwt
         getAccountId (Just jwt) = getSubject jwt
         getAccountId _ = Nothing
 
-respondWithHtmlNode :: Maybe (AccountT Identity) -> TL.Text -> Node -> ResponderM a
-respondWithHtmlNode mAcc title node = do
+getAuthenticatedLayout :: Connection -> AccountT Identity -> TL.Text -> TL.Text -> [Node] -> IO Node
+getAuthenticatedLayout conn acc path title els = do
+    let accountId = _accountId acc
+
+    pages <- getTopPagesByCreator accountId conn
+    
+    return $ authenticatedLayout acc pages path title els
+
+respondWithHtmlNode :: Connection -> Maybe (AccountT Identity) -> TL.Text -> Node -> ResponderM a
+respondWithHtmlNode conn mAcc title node = do
     currentPath <- getCurrentPath
     isHtmx <- checkHtmxRequest
 
-    send $ html $ response isHtmx mAcc title currentPath node
-    where
-        response :: Bool -> Maybe (AccountT Identity) -> TL.Text -> TL.Text -> Node -> BL.ByteString
-        response True _ _ _ node' = HTML.renderNode node'
-        response False mAcc' title' path' node' =
-            HTML.renderDocument
-            $ withLayout mAcc' title' path' node'
+    response' <- liftIO $ response isHtmx mAcc title currentPath node
 
-        withLayout :: Maybe (AccountT Identity) -> TL.Text -> TL.Text -> Node -> Node
-        withLayout (Just account) title' path' node =
-            authenticatedLayout account path' title' [node]
+    send $ html response'
+    where
+        response :: Bool -> Maybe (AccountT Identity) -> TL.Text -> TL.Text -> Node -> IO BL.ByteString
+        response True _ _ _ node' = return $ HTML.renderNode node'
+        response False mAcc' title' path' node' = do
+            HTML.renderDocument <$> withLayout mAcc' title' path' node'
+
+        withLayout :: Maybe (AccountT Identity) -> TL.Text -> TL.Text -> Node -> IO Node
+        withLayout (Just account) title' path' node = do
+            getAuthenticatedLayout conn account path' title' [node]
         withLayout _ title' path' node =
-            anonymousLayout path' title' [node]
+            return $ anonymousLayout path' title' [node]
 
 
 getCurrentPath :: ResponderM TL.Text

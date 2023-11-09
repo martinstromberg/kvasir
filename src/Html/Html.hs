@@ -110,12 +110,15 @@ meta attrs = element "meta" attrs []
 nav :: [Attribute] -> [Node] -> Node
 nav = element "nav"
 
-ul :: [Attribute] -> [Node] -> Node
-ul = element "ul"
+section :: [Attribute] -> [Node] -> Node
+section = element "section"
 
 script :: [Attribute] -> Text -> Node
 script attrs txt = element "script" attrs [text txt]
 
 title :: Text -> Node
 title t = element "title" [] [text t]
+
+ul :: [Attribute] -> [Node] -> Node
+ul = element "ul"
 
