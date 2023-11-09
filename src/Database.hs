@@ -17,7 +17,7 @@ import Data.Int
 import Data.Text (Text)
 import Data.UUID as UUID (toText)
 import Data.UUID.V4 as Uv4 (nextRandom)
-import Database.Types (AccountT(Account), PageT(Page))
+import Database.Types (AccountT(Account), PageT(Page, _pageCreatorId), PrimaryKey (AccountId))
 import Database.Beam
 import Database.Beam.Query
 import Database.Beam.Sqlite
@@ -29,7 +29,13 @@ data KvasirDb f = KvasirDb
                 } deriving (Generic, Database be)
 
 kvasirDb :: DatabaseSettings be KvasirDb
-kvasirDb = defaultDbSettings
+kvasirDb = defaultDbSettings `withDbModification`
+            dbModification {
+                _kvasirPages = modifyTableFields
+                            tableModification {
+                                _pageCreatorId = AccountId (fieldNamed "creator_id")
+                            }
+            }
 
 createAccountTCmd :: Query
 createAccountTCmd =
