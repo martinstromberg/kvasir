@@ -20,3 +20,10 @@ getTopPagesByCreator accountId conn =
         guard_ (_accountId accounts ==. val_ accountId)
         pure pages
 
+getPageById :: TS.Text -> Connection -> IO (Maybe (PageT Identity))
+getPageById pageId conn =
+    runBeamSqlite conn
+    $ runSelectReturningOne
+    $ select
+    $ filter_ (\p -> _pageId p  ==. val_ pageId)
+    $ all_ (_kvasirPages kvasirDb)

@@ -80,6 +80,9 @@ footer = element "footer"
 form :: [Attribute] -> [Node] -> Node
 form = element "form"
 
+h1 :: [Attribute] -> [Node] -> Node
+h1 = element "h1"
+
 head' :: [Node] -> Node
 head' = element "head" []
 

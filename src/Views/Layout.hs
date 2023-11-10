@@ -50,7 +50,7 @@ anonymousHeader activePath =
         [ a' 
             [ href "/"
             , hxSwap "innerHTML"
-            , hxTarget "#app-root"
+            , hxTarget "#main-content"
             ]
             [ text "Kvasir" ]
         ]
@@ -73,7 +73,7 @@ anonymousLayout :: Text -> Text -> [Node] -> Node
 anonymousLayout path pageTitle elems =
     commonLayout pageTitle
     [ anonymousHeader path
-    , main' [ id' "app-root" ] elems
+    , main' [ id' "main-content" ] elems
     , footer [] [text "this is my footer"]
     , htmxNode
     ]
@@ -86,7 +86,7 @@ authenticatedHeader acc =
         [ a' 
             [ href "/"
             , hxSwap "innerHTML"
-            , hxTarget "#app-root"
+            , hxTarget "#main-content"
             ]
             [ text "Kvasir" ]
         ]
@@ -103,7 +103,7 @@ authenticatedHeader acc =
 authenticatedSidebar :: [PageT Identity] -> Node
 authenticatedSidebar pages =
     section [ id' "app-sidebar" ]
-        [ nav []
+        [ nav [ hxBoost True ]
             [ ul [] (map sidebarPageListItem pages)
             ]
         ]
@@ -112,7 +112,10 @@ authenticatedLayout :: AccountT Identity -> [PageT Identity] -> Text -> Text -> 
 authenticatedLayout acc pages path pageTitle elems =
     commonLayout pageTitle
     [ authenticatedHeader acc
-    , main' [ id' "app-root" ] ([authenticatedSidebar pages] <> elems)
+    , main' 
+        [ id' "app-root" ]
+        ( [ authenticatedSidebar pages ] <> [ section [ id' "main-content" ] elems ]
+        )
     , footer [] [text "this is my footer"]
     , htmxNode
     ]

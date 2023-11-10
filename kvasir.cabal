@@ -26,6 +26,7 @@ executable kvasir
                           , Database.Types
                           , Controllers
                           , Controllers.Authentication
+                          , Controllers.Pages
                           , Controllers.Root
                           , Html
                           , Html.Attributes
@@ -35,6 +36,7 @@ executable kvasir
                           , Views.Authentication
                           , Views.Components
                           , Views.Layout
+                          , Views.Pages
                           , Views.Root
 
     build-depends:          base            ^>= 4.17.2.0

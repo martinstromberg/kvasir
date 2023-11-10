@@ -3,7 +3,6 @@
 module Views.Components where
 
 import Data.Text.Lazy (Text, fromStrict)
-import Database.Beam (Identity)
 import Database.Types
 import Html
 import Html.Attributes
@@ -28,12 +27,12 @@ formTextInput = formInput "text"
 formPasswordInput :: Text -> Text -> Node
 formPasswordInput name_ placeholder = formInput "password" name_ placeholder ""
 
-sidebarPageListItem :: PageT Identity -> Node
+sidebarPageListItem :: Page -> Node
 sidebarPageListItem page = 
     let 
-        pageHref = fromStrict $ "/page/" <> _pageId page
+        pageHref = fromStrict $ "/pages/" <> _pageId page
     in
         li [ class' "sidebar-page-list-item" ]
-        [ a' [ href pageHref ]
+        [ a' [ href pageHref , hxTarget "#main-content", hxSwap "innerHTML" ]
             [ text (fromStrict $ _pageTitle page) ]
         ]
