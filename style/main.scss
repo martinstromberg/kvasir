@@ -29,3 +29,18 @@ a {
 header#guest-header, header#app-header {
     @include fixedTopHeader($topMenuHeight);
 }
+
+#app-root {
+    align-items: start;
+    display: flex;
+
+    #app-sidebar {
+        flex: 1 1 200px;
+        min-width: 100px;
+        max-width: 400px;
+    }
+
+    #main-content {
+        flex: 1 1 100%;
+    }
+}

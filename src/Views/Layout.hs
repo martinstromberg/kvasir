@@ -105,6 +105,8 @@ authenticatedSidebar pages =
     section [ id' "app-sidebar" ]
         [ nav [ hxBoost True ]
             [ ul [] (map sidebarPageListItem pages)
+            , a' []
+                [ text "Add a page" ]
             ]
         ]
 
